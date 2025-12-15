@@ -8,9 +8,9 @@
 
 clear
 
-butterflies=$1
+butterflies=0$1
 
-while [ -z "$butterflies" -o $butterflies -le 0 -o $butterflies -gt 9 ]; do
+while [ -z "$butterflies" -o "$butterflies" -le 0 -o "$butterflies" -gt 9 ]; do
     read -p "Quante farfalle partecipano (1-9)? " butterflies
 done
 
@@ -33,18 +33,26 @@ done
 
 loop="yes"
 
+clear
+
 
 until [ -z "$loop" ]; do
-    clear
 
+    printf '\033[H'   # riporta il cursore all'inizio della schermata
     # header (sarebbe meglio usare una funzione)
-    echo -n "       |"
+    printf "          ⛳"
     i=$start
     while [ $i -lt $end ]; do
-	echo -n " "
-	i=$(( i + 1))
+
+	if [ $(( i % 2 )) -ne 0 ]; then
+	    printf " "
+	else
+	    printf '→'
+	fi
+
+	i=$(( i + 1 ))
     done
-    echo "|"
+    printf "⛳\n"
 
 
     for b in $( seq 0 $butterflies ); do
@@ -52,7 +60,7 @@ until [ -z "$loop" ]; do
 	step=$( shuf -i 0-9 -n 1 )
 	current_pos=$(( current_pos + step ))
 	pos[$b]=$current_pos
-	printf '%d (+%d) |' $b $step
+	printf '\r # %d (+%d) |' $b $step
 	for i in $( seq 0 $current_pos ); do
 	    printf ' '
 	done
@@ -68,5 +76,5 @@ until [ -z "$loop" ]; do
 	printf '\n'
     done
 
-    sleep 1
+    sleep 0.5
 done
